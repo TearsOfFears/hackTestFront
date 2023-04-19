@@ -1,2 +1,2 @@
 # hackTestFront
-Fronend part of Fullstach application for hacking Puluj Tests
+Frontend part of Fullstach application for hacking Puluj Tests
