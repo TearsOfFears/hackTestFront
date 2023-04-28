@@ -1,15 +1,37 @@
 import React from 'react';
-interface IButton {
-  children: string | JSX.Element | JSX.Element[];
-  handleClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void | null;
+import { twMerge } from 'tailwind-merge';
+
+const buttonAppearance = {
+  default: 'bg-transparent border-0',
+  primary: 'rounded bg-primary-blue border-0',
+};
+
+type ButtonAppearance = keyof typeof buttonAppearance;
+
+interface Props
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  children: React.ReactNode;
+  style: string;
 }
-function Button(props: IButton): JSX.Element {
-  const { children, handleClick } = props;
+function Button({
+  children,
+  style,
+  ...props
+}: Props): React.ReactElement<Props> {
   return (
     <button
-      className="shadow-md flex transition ease-in
-                      duration-300 hover:bg-blue hover:text-white justify-center justify-items-center rounded-full py-3"
-      onClick={(e) => handleClick(e)}>
+      type="button"
+      className={twMerge(
+        'shadow-md flex transition ease-in duration-300 ' +
+          'hover:bg-blue hover:text-white ' +
+          'justify-center justify-items-center rounded-full py-3',
+        style,
+      )}
+      {...props}
+    >
       {children}
     </button>
   );

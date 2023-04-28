@@ -1,59 +1,117 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import MainLayout from '../Layouts/MainLayout';
-import { Routes } from '../routes.config';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import { useState } from 'react';
+import Modal from '../common/Modal';
 import Select from '../common/Select';
+import Loader from '../components/Loader';
+import {
+  FormValues,
+  initialValues,
+  schemaRegistration,
+} from '../forms/validations';
+import { useFindMutation, useFindQuery } from '../redux/services/university';
+import { useRegisterMutation } from '../redux/services/user';
+
+import { getError } from './../utils/formik';
 
 function Register(): JSX.Element {
+  const [register, { isLoading, isSuccess, error }] = useRegisterMutation();
+  const [modal, setModal] = useState<boolean>(false);
+  const { data, isLoading: isLoadingUniversity } = useFindQuery();
+
   const navigate = useNavigate();
   const [inputs, setInputs] = useState<any>({});
   const handleRegistration = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
+  const formik = useFormik<FormValues>({
+    initialValues,
+    validationSchema: schemaRegistration,
+    validateOnBlur: false,
+    onSubmit: async (data) => {
+      try {
+        data.chatId = 32323232;
+        await register(data);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setModal(!modal);
+      }
+    },
+  });
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setInputs((prev: { key: string; value: string }) => ({ ...prev, [name]: value }));
+    // const name = e.target.name
+    // const value = e.target.value
+    // setInputs((prev: { key: string, value: string }) => ({
+    // 	...prev,
+    // 	[name]: value,
+    // }))
   };
+
+  if (isSuccess) {
+    setTimeout(() => navigate('/'), 2000);
+  }
   return (
-    <MainLayout>
+    <>
       <section className="flex mx-auto flex-col justify-center">
-        <form className="flex mx-auto  flex-col justify-center w-64" onSubmit={handleRegistration}>
+        <form
+          className="flex mx-auto  flex-col justify-center w-64"
+          onSubmit={formik.handleSubmit}
+        >
           <Input
+            disabled={isLoading}
             type="text"
             label="Name"
-            name="name"
-            value={inputs?.name || ''}
-            handleChange={handleInput}
-            extraClasses="mb-8"
+            error={getError(formik, 'name')}
+            {...formik.getFieldProps('name')}
           />
           <Input
+            disabled={isLoading}
             type="email"
             label="Email"
-            name="email"
-            handleChange={handleInput}
-            value={inputs?.email || ''}
+            error={getError(formik, 'email')}
+            {...formik.getFieldProps('email')}
           />
           <Input
+            disabled={isLoading}
             type="password"
             label="Password"
-            name="password"
-            handleChange={handleInput}
-            value={inputs?.password || ''}
+            error={getError(formik, 'password')}
+            {...formik.getFieldProps('password')}
           />
-          <Select
-            type="text"
-            name="university"
-            label="University"
-            value={inputs?.university || ''}
-            handleChange={handleInput}
-          />
-          <Button>Registration</Button>
+          {!isLoadingUniversity && (
+            <Select
+              disabled={isLoading}
+              label="University"
+              error={getError(formik, 'universityId')}
+              {...formik.getFieldProps('universityId')}
+            >
+              <option defaultValue="" hidden />
+              {data.items?.map(({ title, universityId }) => (
+                <option key={universityId} value={universityId}>
+                  {title}
+                </option>
+              ))}
+            </Select>
+          )}
+          {error && (
+            <div className="text-lg text-center text-orange">
+              {error.data.message}
+            </div>
+          )}
+          <Button type="submit" style="mt-5">
+            {!isLoading ? 'Registration' : <Loader />}
+          </Button>
         </form>
       </section>
-    </MainLayout>
+      <Modal open={modal} setOpen={setModal}>
+        You was successfully registered !!!
+      </Modal>
+    </>
   );
 }
 

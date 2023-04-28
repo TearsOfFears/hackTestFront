@@ -1,34 +1,36 @@
 import React from 'react';
+
+import { Item } from '../redux/services/university';
+
 interface ISelect {
+  children: React.ReactNode;
   label: string;
-  type?: string;
   name: string;
   extraClasses?: string;
   value: string;
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
 }
-function Select(props: ISelect): JSX.Element {
-  const { label, type, name, value, handleChange } = props;
+function Select({
+  label,
+  error,
+  value,
+  children,
+  ...props
+}: ISelect): JSX.Element {
+  // items?.shift({ universityId: '' });
   return (
     <div className="flex flex-col justify-center justify-items-center relative my-3">
       <select
-        name={name}
-        value={value}
-        onChange={(e) => handleChange(e)}
         className="peer block min-h-[auto] w-full border-b-2 border-blue
-        pt-1 leading-[2] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary
-        motion-reduce:transition-none">
-        <option defaultValue="" hidden />
-
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-        <option value="4">Four</option>
-        <option value="5">Five</option>
-        <option value="6">Six</option>
-        <option value="7">Seven</option>
-        <option value="8">Eight</option>
+        pt-1 leading-[2] outline-none transition-all
+        duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary
+        motion-reduce:transition-none"
+        {...props}
+      >
+        {children}
       </select>
+      {error && <span className="text-xs text-orange">{error}</span>}
       <label
         htmlFor="exampleFormControlInput2"
         className={`pointer-events-none
@@ -46,9 +48,10 @@ function Select(props: ISelect): JSX.Element {
             dark:text-neutral-200
             dark:peer-focus:text-primary ${
               value
-                ? `scale-[0.8] translate-y-[-1.2rem]`
+                ? `scale-[0.8] translate-y-[-1rem]`
                 : 'peer-data:-translate-y-[1.15rem] peer-data:peer-data:scale-[0.8]'
-            }`}>
+            } ${error && 'bottom-3'}`}
+      >
         {label}
       </label>
     </div>

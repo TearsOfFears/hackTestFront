@@ -1,37 +1,62 @@
 {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
     "env": {
         "browser": true,
-        "es2021": true
+        "commonjs": true,
+        "es6": true,
+        "node": true,
+        "jest": true
     },
     "extends": [
-        "plugin:react/recommended",
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
         "plugin:prettier/recommended",
-        "eslint-config-prettier"
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
-    "parser": "@typescript-eslint/parser",
+    "plugins": ["import", "react-hooks", "@typescript-eslint"],
     "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+            "jsx": true,
+            "tsx": true
+        }
     },
-    "plugins": [
-        "react",
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "linebreak-style": 0,
-        "import/prefer-default-export": "off",
-        "react/jsx-filename-extension": [ "warn", {"extensions": [".tsx"]} ],
-        "react/react-in-jsx-scope": "off",
-        "import/extensions": "off"
+    "globals": {
+        "React": true,
+        "JSX": true
     },
     "settings": {
+        "import/parser": {
+            "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
         "import/resolver": {
-            "typescript": {}
+            "typescript": {
+                "alwaysTryTypes": true
+            }
         }
+    },
+    "rules": {
+        "unused-imports/no-unused-imports": "off",
+        "max-len": ["error", 120],
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "varsIgnorePattern": "^_",
+                "argsIgnorePattern": "^_"
+            }
+        ],
+        "import/order": [
+            "warn",
+            {
+                "alphabetize": { "order": "asc" },
+                "newlines-between": "always",
+                "groups": ["external", "internal", "parent", "index", "sibling"]
+            }
+        ],
+        "import/no-unresolved": ["error", { "ignore": [".css", ".scss", ".sass"] }],
+        "arrow-body-style": "off"
     }
 }
