@@ -1,2 +1,2 @@
-export { userSlices } from './user';
-export { universitySlices } from './university';
+export { userApi } from './user';
+export { universityApi } from './university';

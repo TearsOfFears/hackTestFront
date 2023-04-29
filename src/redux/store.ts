@@ -1,20 +1,42 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import { userSlices, universitySlices } from './services/index';
+import { userApi, universityApi } from './services/index';
+import userSlice from './slices/userSlice';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const reducers = combineReducers({
+  user: userSlice,
+  [userApi.reducerPath]: userApi.reducer,
+  [universityApi.reducerPath]: universityApi.reducer,
+});
+const persistedReducer = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
-  reducer: {
-    [userSlices.reducerPath]: userSlices.reducer,
-    [universitySlices.reducerPath]: universitySlices.reducer,
-  },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
+  devTools: true,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      userSlices.middleware,
-      universitySlices.middleware,
-    ),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(userApi.middleware, universityApi.middleware),
 });
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

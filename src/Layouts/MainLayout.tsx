@@ -1,8 +1,10 @@
 import { Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useLocation, useOutlet } from 'react-router-dom';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 
+import { selectAuth } from '../redux/slices/userSlice';
 import { Routes } from '../routes.config';
 
 type TMainLayout = {
@@ -14,12 +16,13 @@ export interface IRoutes {
 }
 const routes: IRoutes[] = [
   { label: Routes.LOGIN.label, route: Routes.LOGIN.route },
-  { label: Routes.REGISTER.label, route: Routes.REGISTER.route },
+  // { label: Routes.REGISTER.label, route: Routes.REGISTER.route },
 ];
 
 function MainLayout({ children }: TMainLayout): JSX.Element {
   const location = useLocation();
   const currentOutlet = useOutlet();
+  const data = useSelector(selectAuth);
   const { nodeRef } =
     routes.find((route) => route.path === location.pathname) ?? {};
   return (
@@ -32,11 +35,14 @@ function MainLayout({ children }: TMainLayout): JSX.Element {
             </div>
             <div className="flex space-x-7 mb-2 mt-2">
               <div className="hidden md:flex items-center space-x-2">
-                {routes.map(({ label, route }, inx) => (
-                  <Link
-                    to={route}
-                    key={inx}
-                    className={`p-2           
+                {routes.map(({ label, route }, inx) => {
+                  console.log(data);
+                  if (data) {
+                    return (
+                      <Link
+                        to={`/user/${data.userId}`}
+                        key={inx}
+                        className={`p-2           
                       transition ease-in-out
                       duration-300
                       hover:border-b-2
@@ -47,10 +53,31 @@ function MainLayout({ children }: TMainLayout): JSX.Element {
                           ? 'border-b-2 border-blue'
                           : 'border-b-2 border-transparent'
                       }`}
-                  >
-                    {label}
-                  </Link>
-                ))}
+                      >
+                        {data.name}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <Link
+                      to={route}
+                      key={inx}
+                      className={`p-2           
+                      transition ease-in-out
+                      duration-300
+                      hover:border-b-2
+                      hover:border-blue
+                      cursor-pointer select-none
+                      text-black font-bold ${
+                        location.pathname === route
+                          ? 'border-b-2 border-blue'
+                          : 'border-b-2 border-transparent'
+                      }`}
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

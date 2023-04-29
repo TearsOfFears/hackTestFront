@@ -19,8 +19,8 @@ export interface UniversityResponse {
   items: Item[];
   pageInfo: PageInfo;
 }
-export const universitySlices = createApi({
-  reducerPath: 'university',
+export const universityApi = createApi({
+  reducerPath: 'universityApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:4444/api/university/',
     prepareHeaders: (headers, { getState }) => {
@@ -32,7 +32,7 @@ export const universitySlices = createApi({
     },
   }),
   endpoints: (builder) => ({
-    find: builder.query<UniversityResponse>({
+    find: builder.query<UniversityResponse, UniversityResponse>({
       query: () => ({
         url: 'find/?sortBy=createdAt&order=asc',
         method: 'GET',
@@ -44,4 +44,4 @@ export const universitySlices = createApi({
   }),
 });
 
-export const { useFindQuery } = universitySlices;
+export const { useFindQuery } = universityApi;

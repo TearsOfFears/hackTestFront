@@ -4,13 +4,15 @@ import './index.css';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Transition } from '@headlessui/react';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from './Layouts/MainLayout';
 import Loader from './components/Loader';
+import Account from './pages/Account';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { store } from './redux/store';
+import { persistor, store } from './redux/store';
 import { Routes } from './routes.config';
 
 const routes = [
@@ -23,6 +25,11 @@ const routes = [
   {
     path: '/login',
     element: <Login />,
+    nodeRef: createRef(),
+  },
+  {
+    path: '/user/:userId',
+    element: <Account />,
     nodeRef: createRef(),
   },
 ];
@@ -74,6 +81,8 @@ const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 root.render(
   <Provider store={store}>
-    <RouterProvider router={router} fallbackElement={<Loader />} />
+    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <RouterProvider router={router} fallbackElement={<Loader />} />
+    </PersistGate>
   </Provider>,
 );

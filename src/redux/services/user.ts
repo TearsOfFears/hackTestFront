@@ -4,8 +4,8 @@ import { RootState } from '../store';
 
 // import type { Pokemon } from './types';
 
-export const userSlices = createApi({
-  reducerPath: 'user',
+export const userApi = createApi({
+  reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:4444/api/auth/',
     prepareHeaders: (headers, { getState }) => {
@@ -30,4 +30,4 @@ export const userSlices = createApi({
   }),
 });
 
-export const { useRegisterMutation } = userSlices;
+export const { useRegisterMutation } = userApi;
