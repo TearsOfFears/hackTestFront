@@ -1,9 +1,8 @@
-import React, { Fragment, createRef } from 'react';
-import ReactDOM, { createRoot } from 'react-dom/client';
+import React, { createRef } from 'react';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { Transition } from '@headlessui/react';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from './Layouts/MainLayout';
@@ -16,56 +15,24 @@ import { persistor, store } from './redux/store';
 import { Routes } from './routes.config';
 
 const routes = [
-  { path: '/', element: <Home />, nodeRef: createRef() },
+  { path: Routes.HOME.route, element: <Home />, nodeRef: createRef() },
   {
-    path: '/register',
+    path: Routes.REGISTER.route,
     element: <Register />,
     nodeRef: createRef(),
   },
   {
-    path: '/login',
+    path: Routes.LOGIN.route,
     element: <Login />,
     nodeRef: createRef(),
   },
   {
-    path: '/user/:userId',
+    path: Routes.ACCOUNT.route,
     element: <Account />,
     nodeRef: createRef(),
   },
 ];
 
-// const router = createBrowserRouter([
-//   {
-//     path: Routes.HOME.route,
-//     element: <Home />,
-//     children: routes.map((route) => ({
-//       index: route.path === '/',
-//       path: route.path === '/' ? undefined : route.path,
-//       element: route.element,
-//     })),
-//     // loader: <Loader />,
-//   },
-//   {
-//     path: Routes.LOGIN.route,
-//     element: <Login />,
-//     children: routes.map((route) => ({
-//       index: route.path === '/',
-//       path: route.path === '/' ? undefined : route.path,
-//       element: route.element,
-//     })),
-//     // loader: <Loader />,
-//   },
-//   {
-//     path: Routes.REGISTER.route,
-//     element: <Register />,
-//     children: routes.map((route) => ({
-//       index: route.path === '/',
-//       path: route.path === '/' ? undefined : route.path,
-//       element: route.element,
-//     })),
-//     // loader: <Loader />,
-//   },
-// ]);
 const router = createBrowserRouter([
   {
     path: '/',

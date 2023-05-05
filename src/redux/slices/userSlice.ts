@@ -1,27 +1,21 @@
-import {
-  createSlice,
-  createEntityAdapter,
-  createSelector,
-  PayloadAction,
-} from '@reduxjs/toolkit';
-import { Root } from 'react-dom/client';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// import { userSlices } from '../services/user';
 import { RootState } from '../store';
 
+export interface IUser {
+  userId: string;
+  name: string;
+  email: string;
+  chatId: string;
+  universityId: string;
+  passwordHash: string;
+  updatedAt: string;
+  createdAt: string;
+  refreshToken: string;
+  accessToken: string;
+}
 export interface AuthState {
-  user: {
-    userId: string | null;
-    name: string | null;
-    email: string | null;
-    chatId: string | null;
-    universityId: string | null;
-    passwordHash: string | null;
-    updatedAt: string | null;
-    createdAt: string | null;
-    refreshToken: string | null;
-    accessToken: string | null;
-  } | null;
+  user: IUser | null;
 }
 
 const initialState: AuthState = {
@@ -32,19 +26,20 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<AuthState>) => {
-      window.localStorage.setItem(
-        'accessToken',
-        action.payload.data.accessToken,
-      );
-      console.log(action.payload.data);
-      state.user = { ...action.payload.data };
+    setUser: (state, action: PayloadAction<IUser>) => {
+      console.log('action.payload', action.payload);
+      window.localStorage.setItem('accessToken', action.payload.accessToken);
+      state.user = action.payload;
+    },
+    logout: (state) => {
+      window.localStorage.setItem('accessToken', '');
+      state.user = null;
     },
   },
 });
 
-export const selectAuth = (state: RootState) => state.user.user;
+export const selectAuth = (state: RootState) => state.auth.user;
 
-export const { setUser } = userSlice.actions;
+export const { setUser, logout } = userSlice.actions;
 
 export default userSlice.reducer;

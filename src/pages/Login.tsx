@@ -1,60 +1,49 @@
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-import MainLayout from '../Layouts/MainLayout';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Modal from '../common/Modal';
-import Select from '../common/Select';
 import Loader from '../components/Loader';
 import {
-  FormValues,
-  initialValues,
-  schemaRegistration,
+  FormValuesLogin,
+  initialValuesLogin,
+  schemaLogin,
 } from '../forms/validations';
-import { useFindQuery } from '../redux/services/university';
-import { useRegisterMutation } from '../redux/services/user';
+import { useLoginMutation } from '../redux/services/user';
+import { IUser, setUser } from '../redux/slices/userSlice';
 import { Routes } from '../routes.config';
 import { getError } from '../utils/formik';
 
 function Login(): JSX.Element {
-  const [register, { isLoading, isSuccess, error }] = useRegisterMutation();
+  const [login, { data: user, isLoading, isSuccess, error }] =
+    useLoginMutation();
   const [modal, setModal] = useState<boolean>(false);
-  const { data, isLoading: isLoadingUniversity } = useFindQuery();
-
+  const [show, setShow] = useState<boolean>(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState<any>({});
-  const handleRegistration = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-  const formik = useFormik<FormValues>({
-    initialValues,
-    validationSchema: schemaRegistration,
+
+  const formik = useFormik<FormValuesLogin>({
+    initialValues: initialValuesLogin,
+    validationSchema: schemaLogin,
     validateOnBlur: false,
     onSubmit: async (data) => {
-      try {
-        data.chatId = 32323232;
-        await register(data);
-      } catch (e) {
-        console.log(e);
-      } finally {
+      const user = await login(data);
+      if ('data' in user) {
         setModal(!modal);
       }
     },
   });
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const name = e.target.name
-    // const value = e.target.value
-    // setInputs((prev: { key: string, value: string }) => ({
-    // 	...prev,
-    // 	[name]: value,
-    // }))
-  };
 
   if (isSuccess) {
-    setTimeout(() => navigate('/'), 2000);
+    dispatch(setUser({ ...user } as IUser));
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);
   }
+
   return (
     <>
       <section className="flex mx-auto flex-col justify-center">
@@ -62,13 +51,6 @@ function Login(): JSX.Element {
           className="flex mx-auto  flex-col justify-center w-64"
           onSubmit={formik.handleSubmit}
         >
-          <Input
-            disabled={isLoading}
-            type="text"
-            label="Name"
-            error={getError(formik, 'name')}
-            {...formik.getFieldProps('name')}
-          />
           <Input
             disabled={isLoading}
             type="email"
@@ -81,6 +63,9 @@ function Login(): JSX.Element {
             type="password"
             label="Password"
             error={getError(formik, 'password')}
+            showPassword={() => setShow(!show)}
+            isPassword={true}
+            isShow={!show}
             {...formik.getFieldProps('password')}
           />
           {error && (
@@ -91,9 +76,6 @@ function Login(): JSX.Element {
           <Button type="submit" style="mt-5">
             {!isLoading ? 'Login' : <Loader />}
           </Button>
-          {/*<Button type="submit" style="mt-3">*/}
-          {/*  */}
-          {/*</Button>*/}
           <Link
             to={Routes.REGISTER.route}
             className="mt-5 transition-all duration-500 ease-out
@@ -105,7 +87,17 @@ function Login(): JSX.Element {
         </form>
       </section>
       <Modal open={modal} setOpen={setModal}>
-        You was successfully registered !!!
+        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 bg-green">
+          <div className="sm:flex sm:items-start">
+            <div className="mt-2 mb-2 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <div className="mt-2 text-center">
+                <p className="text-4xl text-green">
+                  You was successfully logged in !!!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
     </>
   );

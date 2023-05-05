@@ -1,4 +1,5 @@
-import React from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import React, { memo } from 'react';
 interface IInput {
   label: string;
   type: string;
@@ -8,8 +9,20 @@ interface IInput {
   value: string;
   disabled: boolean;
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  showPassword?: () => void;
+  isPassword?: boolean;
+  isShow?: boolean;
 }
-function Input({ error, value, label, ...props }: IInput): JSX.Element {
+function Input({
+  error,
+  value,
+  label,
+  showPassword,
+  isPassword = false,
+  isShow,
+  type,
+  ...props
+}: IInput): JSX.Element {
   return (
     <div className="flex flex-col justify-center justify-items-center relative my-3">
       <input
@@ -17,8 +30,21 @@ function Input({ error, value, label, ...props }: IInput): JSX.Element {
         pt-1 leading-[2] outline-none transition-all
         duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary
         motion-reduce:transition-none"
+        type={isShow ? 'password' : 'text'}
         {...props}
       />
+      {isPassword &&
+        (isShow ? (
+          <EyeIcon
+            className="position absolute right-2 top-[12px] text-blue w-5 cursor-pointer select-none"
+            onClick={showPassword}
+          />
+        ) : (
+          <EyeSlashIcon
+            className="position absolute right-2 text-blue top-[12px] w-5 cursor-pointer select-none"
+            onClick={showPassword}
+          />
+        ))}
       <label
         htmlFor="exampleFormControlInput2"
         className={`pointer-events-none
@@ -47,4 +73,4 @@ function Input({ error, value, label, ...props }: IInput): JSX.Element {
   );
 }
 
-export default Input;
+export default memo(Input);

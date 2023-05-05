@@ -1,10 +1,11 @@
 import MainLayout from '../Layouts/MainLayout';
+import Filter from '../components/Home/Filter';
 
 function Home(): JSX.Element {
   return (
     <>
-      <div className="container mx-auto">
-        <h1>test</h1>
+      <div className="container mx-auto flex flex-col">
+        <Filter />
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { Item } from '../redux/services/university';
 
@@ -58,4 +58,4 @@ function Select({
   );
 }
 
-export default Select;
+export default memo(Select);

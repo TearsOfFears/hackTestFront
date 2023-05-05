@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 const buttonAppearance = {
@@ -37,4 +37,4 @@ function Button({
   );
 }
 
-export default Button;
+export default memo(Button);

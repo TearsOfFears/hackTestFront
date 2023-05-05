@@ -1,8 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-import { RootState } from '../store';
-
-// import type { Pokemon } from './types';
+import { apiSlice } from '../api';
 
 export interface PageInfo {
   pageSize: number;
@@ -19,22 +15,12 @@ export interface UniversityResponse {
   items: Item[];
   pageInfo: PageInfo;
 }
-export const universityApi = createApi({
-  reducerPath: 'universityApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:4444/api/university/',
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState)?.auth?.token;
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+
+export const universityApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     find: builder.query<UniversityResponse, UniversityResponse>({
       query: () => ({
-        url: 'find/?sortBy=createdAt&order=asc',
+        url: 'university/find/?sortBy=createdAt&order=asc&pageSize=3&pageIndex=0',
         method: 'GET',
       }),
     }),

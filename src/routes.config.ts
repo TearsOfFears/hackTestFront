@@ -11,4 +11,8 @@ export const Routes = {
     route: '/register',
     label: 'Register',
   },
+  ACCOUNT: {
+    route: '/account/:userId',
+    label: 'Account',
+  },
 };

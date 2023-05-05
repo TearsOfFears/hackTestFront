@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import MainLayout from '../Layouts/MainLayout';
 import Button from '../common/Button';
@@ -15,18 +15,16 @@ import {
   schemaRegistration,
 } from '../forms/validations';
 import { useFindQuery } from '../redux/services/university';
-import { useRegisterMutation } from '../redux/services/user';
+import { useGetQuery, useRegisterMutation } from '../redux/services/user';
 import { selectAuth } from '../redux/slices/userSlice';
 import { Routes } from '../routes.config';
 import { getError } from '../utils/formik';
 
 function Account(): JSX.Element {
-  const [register, { isLoading, isSuccess, error }] = useRegisterMutation();
   const [modal, setModal] = useState<boolean>(false);
-  const { data, isLoading: isLoadingUniversity } = useFindQuery();
-  const user = useSelector(selectAuth);
-  const navigate = useNavigate();
-
+  // const navigate = useNavigate();
+  const { userId } = useParams();
+  const { data, isLoading, error } = useGetQuery(userId);
   // const formik = useFormik<FormValues>({
   //   initialValues,
   //   validationSchema: schemaRegistration,
@@ -50,14 +48,17 @@ function Account(): JSX.Element {
     // 	[name]: value,
     // }))
   };
+  if (isLoading) {
+    return <Loader />;
+  }
 
-  if (isSuccess) {
-    setTimeout(() => navigate('/'), 2000);
+  if (error) {
+    return <h1>{error.data.message}</h1>;
   }
   return (
     <>
       <section className="flex mx-auto flex-col justify-center">
-        <h1> {user.name}</h1>
+        <h1> {data.name}</h1>
         {/*<form*/}
         {/*  className="flex mx-auto  flex-col justify-center w-64"*/}
         {/*  onSubmit={formik.handleSubmit}*/}

@@ -1,27 +1,34 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { FormValuesLogin } from '../../forms/validations';
+import { apiSlice } from '../api';
+import { AuthState, IUser } from '../slices/userSlice';
 
-import { RootState } from '../store';
-
-// import type { Pokemon } from './types';
-
-export const userApi = createApi({
-  reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:4444/api/auth/',
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState)?.auth?.token;
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<UserResponse, LoginRequest>({
+    register: builder.mutation<AuthState, FormValuesLogin>({
       query: (credentials) => ({
-        url: 'register',
+        url: 'auth/register',
         method: 'POST',
         body: credentials,
+      }),
+    }),
+    login: builder.mutation<IUser, FormValuesLogin>({
+      query: (credentials) => ({
+        url: 'auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    logout: builder.mutation<Pick<IUser, 'userId'>, any>({
+      query: (credentials) => ({
+        url: 'auth/logout',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    get: builder.query<string, any>({
+      query: (credentials) => ({
+        url: `auth/${credentials}`,
+        method: 'GET',
       }),
     }),
     // protected: builder.mutation<{ message: string }, void>({
@@ -30,4 +37,9 @@ export const userApi = createApi({
   }),
 });
 
-export const { useRegisterMutation } = userApi;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useGetQuery,
+} = userApi;

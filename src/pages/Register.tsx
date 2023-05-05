@@ -1,9 +1,8 @@
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-import MainLayout from '../Layouts/MainLayout';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Modal from '../common/Modal';
@@ -14,58 +13,49 @@ import {
   initialValues,
   schemaRegistration,
 } from '../forms/validations';
-import { useFindMutation, useFindQuery } from '../redux/services/university';
+import { useFindQuery } from '../redux/services/university';
 import { useRegisterMutation } from '../redux/services/user';
-import { AuthState, selectAuth, setUser } from '../redux/slices/userSlice';
+import { IUser, setUser } from '../redux/slices/userSlice';
 import { Routes } from '../routes.config';
 
 import { getError } from './../utils/formik';
 
 function Register(): JSX.Element {
-  const [register, { isLoading, isSuccess, error }] = useRegisterMutation();
+  const [register, { data: user, isLoading, isSuccess, error }] =
+    useRegisterMutation();
+  const [show, setShow] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-  const { data, isLoading: isLoadingUniversity } = useFindQuery();
+  const {
+    data,
+    isLoading: isLoadingUniversity,
+    error: errorUniversity,
+  } = useFindQuery();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [inputs, setInputs] = useState<any>({});
-  const handleRegistration = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
   const formik = useFormik<FormValues>({
     initialValues,
     validationSchema: schemaRegistration,
     validateOnBlur: false,
     onSubmit: async (data) => {
-      try {
-        data.chatId = 32323232;
-        const user = await register(data);
-        if (user) {
-          setModal(!modal);
-          dispatch(
-            setUser({
-              ...user,
-            }),
-          );
-        }
-      } catch (e) {
-        console.log(e);
+      const user = await register(data);
+      if ('data' in user) {
+        setModal(!modal);
       }
     },
   });
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const name = e.target.name
-    // const value = e.target.value
-    // setInputs((prev: { key: string, value: string }) => ({
-    // 	...prev,
-    // 	[name]: value,
-    // }))
-  };
 
-  if (isSuccess) {
-    setTimeout(() => navigate('/'), 2000);
+  if (errorUniversity) {
+    return <h1> {errorUniversity.data.message}</h1>;
   }
+  if (isSuccess) {
+    dispatch(setUser({ ...user } as IUser));
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);
+  }
+
   return (
     <>
       <section className="flex mx-auto flex-col justify-center">
@@ -92,6 +82,9 @@ function Register(): JSX.Element {
             type="password"
             label="Password"
             error={getError(formik, 'password')}
+            showPassword={() => setShow(!show)}
+            isPassword={true}
+            isShow={!show}
             {...formik.getFieldProps('password')}
           />
           {!isLoadingUniversity && (
