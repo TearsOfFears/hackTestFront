@@ -1,9 +1,9 @@
 export interface IFind {
-  items: IItem[];
+  items: IItemSubject[];
   pageInfo: IPageInfo;
 }
 
-export interface IItem {
+export interface IItemSubject {
   subjectId: string;
   title: string;
   universityId: string;

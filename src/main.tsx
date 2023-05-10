@@ -14,6 +14,8 @@ import Register from './pages/Register';
 import { persistor, store } from './redux/store';
 import { Routes } from './routes.config';
 
+import { ThemeProvider } from '@material-tailwind/react';
+
 const routes = [
   { path: Routes.HOME.route, element: <Home />, nodeRef: createRef() },
   {
@@ -46,10 +48,13 @@ const router = createBrowserRouter([
 ]);
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
+
 root.render(
   <Provider store={store}>
-    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-      <RouterProvider router={router} fallbackElement={<Loader />} />
-    </PersistGate>
+    <ThemeProvider>
+      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+        <RouterProvider router={router} fallbackElement={<Loader />} />
+      </PersistGate>
+    </ThemeProvider>
   </Provider>,
 );

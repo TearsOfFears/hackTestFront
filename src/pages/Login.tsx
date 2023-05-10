@@ -1,3 +1,4 @@
+import { Dialog, DialogBody, DialogHeader } from '@material-tailwind/react';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -36,14 +37,16 @@ function Login(): JSX.Element {
       }
     },
   });
-
+  if (isLoading) {
+    return <Loader />;
+  }
   if (isSuccess) {
     dispatch(setUser({ ...user } as IUser));
     setTimeout(() => {
       navigate('/');
-    }, 2000);
+    }, 3000);
   }
-
+  console.log('isLoading', isLoading);
   return (
     <>
       <section className="flex mx-auto flex-col justify-center">
@@ -52,6 +55,7 @@ function Login(): JSX.Element {
           onSubmit={formik.handleSubmit}
         >
           <Input
+            variant="standard"
             disabled={isLoading}
             type="email"
             label="Email"
@@ -59,6 +63,7 @@ function Login(): JSX.Element {
             {...formik.getFieldProps('email')}
           />
           <Input
+            variant="standard"
             disabled={isLoading}
             type="password"
             label="Password"
@@ -74,7 +79,7 @@ function Login(): JSX.Element {
             </div>
           )}
           <Button type="submit" style="mt-5">
-            {!isLoading ? 'Login' : <Loader />}
+            Login
           </Button>
           <Link
             to={Routes.REGISTER.route}
@@ -86,19 +91,18 @@ function Login(): JSX.Element {
           </Link>
         </form>
       </section>
-      <Modal open={modal} setOpen={setModal}>
-        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 bg-green">
-          <div className="sm:flex sm:items-start">
-            <div className="mt-2 mb-2 text-center sm:ml-4 sm:mt-0 sm:text-left">
-              <div className="mt-2 text-center">
-                <p className="text-4xl text-green">
-                  You was successfully logged in !!!
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <Dialog
+        open={modal}
+        handler={setModal}
+        className={'rounded-full'}
+        dismiss={{ outsidePress: false }}
+      >
+        <DialogBody className="text-3xl flex gap-4 justify-center items-center h-48">
+          <p className="text-4xl text-green">
+            You was successfully logged in !!!
+          </p>
+        </DialogBody>
+      </Dialog>
     </>
   );
 }

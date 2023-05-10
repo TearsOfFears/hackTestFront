@@ -1,3 +1,4 @@
+import { Dialog, DialogBody } from '@material-tailwind/react';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -46,14 +47,14 @@ function Register(): JSX.Element {
     },
   });
 
-  if (errorUniversity) {
-    return <h1> {errorUniversity.data.message}</h1>;
+  if (isLoadingUniversity) {
+    return <Loader />;
   }
   if (isSuccess) {
     dispatch(setUser({ ...user } as IUser));
     setTimeout(() => {
       navigate('/');
-    }, 2000);
+    }, 3000);
   }
 
   return (
@@ -64,6 +65,7 @@ function Register(): JSX.Element {
           onSubmit={formik.handleSubmit}
         >
           <Input
+            variant="standard"
             disabled={isLoading}
             type="text"
             label="Name"
@@ -71,6 +73,7 @@ function Register(): JSX.Element {
             {...formik.getFieldProps('name')}
           />
           <Input
+            variant="standard"
             disabled={isLoading}
             type="email"
             label="Email"
@@ -78,6 +81,7 @@ function Register(): JSX.Element {
             {...formik.getFieldProps('email')}
           />
           <Input
+            variant="standard"
             disabled={isLoading}
             type="password"
             label="Password"
@@ -89,18 +93,22 @@ function Register(): JSX.Element {
           />
           {!isLoadingUniversity && (
             <Select
-              disabled={isLoading}
+              disabled={isLoading || Boolean(error)}
               label="University"
+              variant="standard"
               error={getError(formik, 'universityId')}
+              arrayOption={data?.items.map(({ title, universityId }) => ({
+                value: universityId,
+                text: title,
+              }))}
+              containerProps={{
+                className: 'mt-3',
+              }}
+              labelProps={{
+                className: '!text-blue',
+              }}
               {...formik.getFieldProps('universityId')}
-            >
-              <option defaultValue="" hidden />
-              {data.items?.map(({ title, universityId }) => (
-                <option key={universityId} value={universityId}>
-                  {title}
-                </option>
-              ))}
-            </Select>
+            />
           )}
           {error && (
             <div className="text-lg text-center text-orange">
@@ -108,7 +116,7 @@ function Register(): JSX.Element {
             </div>
           )}
           <Button type="submit" style="mt-5">
-            {!isLoading ? 'Registration' : <Loader />}
+            {'Registration'}
           </Button>
         </form>
 
@@ -119,19 +127,18 @@ function Register(): JSX.Element {
           I`m have account
         </Link>
       </section>
-      <Modal open={modal} setOpen={setModal}>
-        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 bg-green">
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-              <div className="mt-2 text-center">
-                <p className="text-4xl text-green">
-                  You was successfully registered !!!
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <Dialog
+        open={modal}
+        handler={setModal}
+        className={'rounded-full'}
+        dismiss={{ outsidePress: false }}
+      >
+        <DialogBody className="text-3xl flex gap-4 justify-center items-center h-48">
+          <p className="text-4xl text-green">
+            You was successfully logged in !!!
+          </p>
+        </DialogBody>
+      </Dialog>
     </>
   );
 }

@@ -1,23 +1,22 @@
 import { FormValuesLogin } from '../../forms/validations';
-import { IFind } from '../../types/subject';
+import { IFind } from '../../types/question';
 import { apiSlice } from '../api';
 import { AuthState, IUser } from '../slices/userSlice';
 
 export const subjectApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createSubject: builder.mutation<AuthState, FormValuesLogin>({
+    createQuestion: builder.mutation<AuthState, FormValuesLogin>({
       query: (credentials) => ({
-        url: 'subject/create',
+        url: 'question/create',
         method: 'POST',
         body: credentials,
       }),
     }),
     findQuestion: builder.query<IFind, string>({
       query: (credentials) => {
-        console.log('credentials', credentials);
+        const query = new URLSearchParams(credentials).toString();
         return {
-          //url: `subject/find/${credentials}`,
-          url: `question/find/?sortBy=createdAt&order=asc&pageSize=20&pageIndex=0&subjectId=${credentials}`,
+          url: `question/find/?${query}`,
           method: 'GET',
         };
       },

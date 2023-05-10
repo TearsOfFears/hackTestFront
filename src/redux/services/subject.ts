@@ -14,9 +14,7 @@ export const subjectApi = apiSlice.injectEndpoints({
     }),
     findSubject: builder.query<IFind, string>({
       query: (credentials) => {
-        console.log('credentials', credentials);
         return {
-          //url: `subject/find/${credentials}`,
           url: `subject/find/?sortBy=createdAt&order=asc&pageSize=20&pageIndex=0&universityId=${credentials}`,
           method: 'GET',
         };
