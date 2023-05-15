@@ -6,6 +6,7 @@ module.exports = withMT({
     './src/**/*.{js,ts,jsx,tsx}',
     './node_modules/tw-elements/dist/js/**/*.js',
   ],
+  important: '#root',
   plugins: [require('tw-elements/dist/plugin.cjs')],
   theme: {
     colors: {

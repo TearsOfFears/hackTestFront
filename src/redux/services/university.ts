@@ -18,9 +18,9 @@ export interface UniversityResponse {
 
 export const universityApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    find: builder.query<UniversityResponse, UniversityResponse>({
+    find: builder.query<UniversityResponse, any>({
       query: () => ({
-        url: 'university/find/?sortBy=createdAt&order=asc&pageSize=3&pageIndex=0',
+        url: 'university/find/?sortBy=createdAt&order=asc&pageSize=20&pageIndex=0',
         method: 'GET',
       }),
     }),

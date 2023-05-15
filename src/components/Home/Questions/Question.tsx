@@ -1,6 +1,7 @@
-import { Input, Button } from '@material-tailwind/react';
+import { SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 
+import Input from '../../../common/Input';
 import List from '../../../common/List';
 import Select from '../../../common/Select';
 import { useFindQuestionQuery } from '../../../redux/services/question';
@@ -9,26 +10,26 @@ import { getError } from '../../../utils/formik';
 import ItemQuestion from './Item';
 interface sorterArray {
   value: string;
-  text: string;
+  name: string;
 }
 const sortOrderArray: sorterArray[] = [
   {
     value: 'createdAt',
-    text: 'Created at',
+    name: 'Created at',
   },
   {
     value: 'question',
-    text: 'Question',
+    name: 'Question',
   },
 ];
 const sortByArray: sorterArray[] = [
   {
     value: 'asc',
-    text: 'Ascending',
+    name: 'Ascending',
   },
   {
     value: 'desc',
-    text: 'Descending',
+    name: 'Descending',
   },
 ];
 
@@ -54,56 +55,48 @@ function Question({ subjectId }) {
       refetchOnMountOrArgChange: true,
     },
   );
+  const handleSorter = ({ target }: SelectChangeEvent<typeof sorter>) => {
+    const { value, name } = target;
+    setSorter((prev) => ({ ...prev, [name]: value }));
+  };
   return (
     <>
       {subjectId && (
         <>
-          <div className={'mt-6 flex flex-row gap-5 w-10'}>
+          <div className={'mt-6 flex flex-row gap-6 w-full'}>
             <Select
               variant="outlined"
               label="Sort by"
               value={sorter.sortBy}
+              name="sortBy"
+              size="small"
               disabled={error || isLoading}
-              labelProps={{
-                className:
-                  '!text-orange before:!border-blue before:!mt-[6px] after:!border-blue  after:!mt-[6px]',
-              }}
-              className="pr-20 !border-blue !border-t-transparent "
-              disabled={error || isLoading}
-              onChange={(sortBy) => setSorter((prev) => ({ ...prev, sortBy }))}
+              onChange={handleSorter}
               arrayOption={sortOrderArray}
+              sx={{ padding: '0px', borderRadius: '10px' }}
             />
             <Select
               variant="outlined"
-              label="Order"
-              labelProps={{
-                className:
-                  '!text-orange before:!border-blue before:!mt-[6px] after:!border-blue  after:!mt-[6px]',
-              }}
-              disabled={error || isLoading}
+              label="Order by"
               value={sorter.order}
-              onChange={(order) => setSorter((prev) => ({ ...prev, order }))}
-              className="pr-20 !border-blue !border-t-transparent"
+              name="order"
+              size="small"
+              disabled={error || isLoading}
+              onChange={handleSorter}
               arrayOption={sortByArray}
+              sx={{ padding: '0px' }}
             />
-
             <Input
-              type="text"
-              label="Question"
-              labelProps={{
-                className:
-                  '!text-orange before:!border-blue before:!mt-[6px] after:!border-blue after:!mt-[6px]',
-              }}
-              value={question}
-              onChange={onChange}
-              className={
-                question
-                  ? 'pr-20 !border-blue !border-t-transparent'
-                  : '!border-blue focus:!border-t-transparent'
-              }
+              variant="outlined"
+              label="Order by"
+              value={sorter.order}
+              name="order"
+              disabled={error || isLoading}
+              onChange={handleSorter}
+              arrayOption={sortByArray}
+              sx={{ padding: '0px' }}
             />
           </div>
-
           <List
             isLoading={isLoading}
             data={data}

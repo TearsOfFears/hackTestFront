@@ -12,6 +12,7 @@ function ItemFilter({ title, id, handleOnClick }: IItemFilter) {
     <Button
       style={'px-7 my-2  border-blue border-2 items-center font-bold text-lg'}
       key={id}
+      variant="outlined"
       onClick={() => handleOnClick(id)}
     >
       {title}

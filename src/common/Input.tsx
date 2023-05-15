@@ -5,6 +5,7 @@ interface IInput {
   label: string;
   type: string;
   name: string;
+  variant: string;
   error?: string;
   extraClasses?: string;
   value: string;
@@ -45,7 +46,7 @@ function InputCommon({
           className:
             '!text-blue before:!border-blue before:!mt-[6px] after:!border-blue after:!mt-[6px] ',
         }}
-        className="pr-20 !border-blue !border-t-transparent !text-xl"
+        className="pr-20 !border-blue !border-t-transparent !text-xl !w-full"
         {...props}
       />
       {error && <span className="text-xs text-orange">{error}</span>}

@@ -31,7 +31,8 @@ function Register(): JSX.Element {
     isLoading: isLoadingUniversity,
     error: errorUniversity,
   } = useFindQuery();
-
+  console.log('user', user);
+  console.log('isLoading', isLoading);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -97,10 +98,13 @@ function Register(): JSX.Element {
               label="University"
               variant="standard"
               error={getError(formik, 'universityId')}
-              arrayOption={data?.items.map(({ title, universityId }) => ({
-                value: universityId,
-                text: title,
-              }))}
+              arrayOption={
+                data &&
+                data?.items.map(({ title, universityId }) => ({
+                  value: universityId,
+                  text: title,
+                }))
+              }
               containerProps={{
                 className: 'mt-3',
               }}
@@ -108,6 +112,9 @@ function Register(): JSX.Element {
                 className: '!text-blue',
               }}
               {...formik.getFieldProps('universityId')}
+              onChange={(universityId) =>
+                formik.setFieldValue('universityId', universityId)
+              }
             />
           )}
           {error && (
@@ -115,7 +122,7 @@ function Register(): JSX.Element {
               {error.data.message}
             </div>
           )}
-          <Button type="submit" style="mt-5">
+          <Button type="submit" variant="outlined" style="mt-5">
             {'Registration'}
           </Button>
         </form>
@@ -135,7 +142,7 @@ function Register(): JSX.Element {
       >
         <DialogBody className="text-3xl flex gap-4 justify-center items-center h-48">
           <p className="text-4xl text-green">
-            You was successfully logged in !!!
+            You was successfully register !!!
           </p>
         </DialogBody>
       </Dialog>

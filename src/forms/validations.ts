@@ -26,7 +26,7 @@ export const schemaRegistration = yup.object({
 
 export const initialValuesLogin = {
   email: 'test111@gmail.com',
-  password: 'test111',
+  password: 'test12345678',
 };
 export type FormValuesLogin = typeof initialValuesLogin;
 

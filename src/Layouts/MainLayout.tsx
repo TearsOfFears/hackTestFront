@@ -27,7 +27,7 @@ function MainLayout(): JSX.Element {
 
   return (
     <>
-      <nav className="container bg-white mx-auto shadow-2xl mb-11 rounded-xl my-10 py-2">
+      <nav className="container bg-white mx-auto shadow-2xl mb-11 rounded-xl my-10 py-2 bg-blend-multiply sticky">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between">
             <div className="hidden md:flex items-center">

@@ -46,7 +46,7 @@ function Login(): JSX.Element {
       navigate('/');
     }, 3000);
   }
-  console.log('isLoading', isLoading);
+
   return (
     <>
       <section className="flex mx-auto flex-col justify-center">
@@ -78,7 +78,7 @@ function Login(): JSX.Element {
               {error.data.message}
             </div>
           )}
-          <Button type="submit" style="mt-5">
+          <Button type="submit" style="mt-5" variant="contained">
             Login
           </Button>
           <Link

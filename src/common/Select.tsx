@@ -1,44 +1,59 @@
-import { Select, Option } from '@material-tailwind/react';
+import {
+  Checkbox,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  OutlinedInput,
+  SelectProps,
+} from '@mui/material';
 import React, { memo } from 'react';
 
 import { Item } from '../redux/services/university';
 
 interface ItemOption {
   value: string;
-  text: string;
+  name: string;
 }
-interface ISelect {
+interface ISelect extends SelectProps {
   children: React.ReactNode;
   label: string;
   name: string;
   extraClasses?: string;
-  value: string;
-  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error?: string;
+  disabled: boolean | undefined;
+  error?: string[];
   arrayOption: ItemOption[];
   isLoading: boolean;
+  isCheckbox: boolean;
+  size?: string;
 }
-function SelectCommon({ error, arrayOption, ...props }: ISelect): JSX.Element {
+function SelectCommon({
+  error,
+  arrayOption,
+  label,
+  size,
+  ...props
+}: ISelect): JSX.Element {
   return (
-    <div className="flex flex-col justify-center justify-items-center relative">
+    <FormControl size={size}>
+      <InputLabel id="multiple-name-label">{label}</InputLabel>
       <Select
-        labelProps={{
-          className:
-            '!text-orange before:!border-blue before:!mt-[6px] after:!border-blue after:!mt-[6px]',
-        }}
-        className="pr-20 !border-blue !border-t-transparent !text-xl"
+        labelId="multiple-name-label"
+        id="multiple-name-label"
+        value={arrayOption}
+        input={<OutlinedInput label={label} />}
         {...props}
       >
-        {arrayOption.map(({ value, text }) => (
-          <Option
-            value={value}
-            className="my-2 hover:!text-blue focus:!bg-blue focus:!text-white"
-          >
-            {text}
-          </Option>
+        {arrayOption.map(({ value, name }) => (
+          <MenuItem key={value} value={value}>
+            {/*<ListItemText primary={title} />*/}
+            {/*<Checkbox checked={arrayOption.indexOf(universityId) > -1} />*/}
+            {name}
+          </MenuItem>
         ))}
       </Select>
-    </div>
+      {error && <span className="text-xs text-orange">{error}</span>}
+    </FormControl>
   );
 }
 
